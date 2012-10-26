@@ -31,7 +31,6 @@ modules.builtin
 *.lzo
 *.patch
 *.gcno
-hypnos-modules/*/Makefile
 
 #
 # Top-level generic files
