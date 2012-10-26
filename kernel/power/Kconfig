@@ -330,3 +330,10 @@ config PM_OPP
 	  representing individual voltage domains and provides SOC
 	  implementations a ready to use framework to manage OPPs.
 	  For more information, read <file:Documentation/power/opp.txt>
+
+config HYPNOS
+	bool "To enable the runtime system Hypnos"
+	depends on PM && RTC_CLASS
+	default n
+	---help---
+		Enable last minute checking for devices' power states.

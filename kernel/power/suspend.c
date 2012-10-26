@@ -25,6 +25,10 @@
 
 #include "power.h"
 
+#ifdef CONFIG_HYPNOS
+#include <linux/hypnos.h>
+#endif
+
 const char *const pm_states[PM_SUSPEND_MAX] = {
 #ifdef CONFIG_EARLYSUSPEND
 	[PM_SUSPEND_ON]		= "on",
@@ -164,6 +168,13 @@ static int suspend_enter(suspend_state_t state)
 	arch_suspend_disable_irqs();
 	BUG_ON(!irqs_disabled());
 
+#ifdef CONFIG_HYPNOS
+	error = hypnos_suspend_late();
+	if(error){
+		goto Hypnos;
+	}
+#endif
+
 	error = sysdev_suspend(PMSG_SUSPEND);
 	if (!error) {
 		if (!suspend_test(TEST_CORE) && pm_check_wakeup_events()) {
@@ -173,6 +184,9 @@ static int suspend_enter(suspend_state_t state)
 		sysdev_resume();
 	}
 
+#ifdef CONFIG_HYPNOS
+ Hypnos:
+#endif
 	arch_suspend_enable_irqs();
 	BUG_ON(irqs_disabled());
 
@@ -189,6 +203,9 @@ static int suspend_enter(suspend_state_t state)
 	if (suspend_ops->finish)
 		suspend_ops->finish();
 
+#ifdef CONFIG_HYPNOS
+	hypnos_resume_late();
+#endif
 	return error;
 }
 

@@ -19,6 +19,10 @@
 #include <linux/ioctl.h>
 #include <linux/time.h>
 
+#ifdef CONFIG_HYPNOS
+#include <linux/rtc.h>
+#endif
+
 enum android_alarm_type {
 	/* return code bit numbers or set alarm arg */
 	ANDROID_ALARM_RTC_WAKEUP,
@@ -75,6 +79,10 @@ ktime_t alarm_get_elapsed_realtime(void);
 /* set rtc while preserving elapsed realtime */
 int alarm_set_rtc(const struct timespec ts);
 
+#endif
+
+#ifdef CONFIG_HYPNOS
+extern void hypnos_rtc_read_time(struct rtc_time*);
 #endif
 
 enum android_alarm_return_flags {

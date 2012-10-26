@@ -14,6 +14,9 @@
 #include <linux/rtc.h>
 #include <linux/sched.h>
 #include <linux/log2.h>
+#ifdef CONFIG_HYPNOS
+#include<linux/hypnos.h>
+#endif
 
 int rtc_read_time(struct rtc_device *rtc, struct rtc_time *tm)
 {
@@ -305,8 +308,12 @@ int rtc_set_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 		err = -ENODEV;
 	else if (!rtc->ops->set_alarm)
 		err = -EINVAL;
-	else
+	else{
+#ifdef CONFIG_HYPNOS
+		hypnos_rtc_set_alarm(alarm);
+#endif
 		err = rtc->ops->set_alarm(rtc->dev.parent, alarm);
+	}
 
 	mutex_unlock(&rtc->ops_lock);
 	return err;

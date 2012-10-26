@@ -512,6 +512,14 @@ static void rtc_alarm_remove_device(struct device *dev,
 	}
 }
 
+#ifdef CONFIG_HYPNOS
+void hypnos_rtc_read_time(struct rtc_time* rtc_current_time){
+	rtc_read_time(alarm_rtc_dev, rtc_current_time);
+}
+EXPORT_SYMBOL(hypnos_rtc_read_time);
+#endif
+
+
 static struct class_interface rtc_alarm_interface = {
 	.add_dev = &rtc_alarm_add_device,
 	.remove_dev = &rtc_alarm_remove_device,

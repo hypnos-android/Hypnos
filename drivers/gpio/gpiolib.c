@@ -12,6 +12,10 @@
 #include <linux/idr.h>
 #include <linux/slab.h>
 
+#ifdef CONFIG_HYPNOS
+#include <linux/hypnos.h>
+#endif
+
 
 /* Optional implementation infrastructure for GPIO interfaces.
  *
@@ -1454,6 +1458,10 @@ int gpio_direction_output(unsigned gpio, int value)
 		}
 	}
 
+#ifdef CONFIG_HYPNOS
+	hypnos_gpio_direction_output(gpio, value);
+#endif
+
 	status = chip->direction_output(chip, gpio, value);
 	if (status == 0)
 		set_bit(FLAG_IS_OUT, &desc->flags);
@@ -1568,6 +1576,11 @@ void __gpio_set_value(unsigned gpio, int value)
 
 	chip = gpio_to_chip(gpio);
 	WARN_ON(chip->can_sleep);
+
+#ifdef CONFIG_HYPNOS
+	hypnos_gpio_set_value(gpio, value);
+#endif
+
 	chip->set(chip, gpio - chip->base, value);
 }
 EXPORT_SYMBOL_GPL(__gpio_set_value);
